@@ -17,4 +17,6 @@ public interface EmploiRepository extends JpaRepository<Emploi, Long> {
 	List<Emploi> findEmploisBetweenDates(@Param("personne") Personne personne, @Param("dateDebut") LocalDate dateDebut,
 			@Param("dateFin") LocalDate dateFin);
 
+	List<Emploi> findByPersonneId(Long personneId);
+
 }

@@ -1,9 +1,8 @@
 package com.gestiondepersonne.gestiondepersonne.controller;
 
-
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import java.time.LocalDate;
 import java.util.List;
@@ -19,16 +18,18 @@ import com.gestiondepersonne.gestiondepersonne.service.PersonneService;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/personnes")
-@ApiOperation(value = "Opérations de festion des personnes")
+@Tag(name = "Personnes", description = "Opérations de gestion des personnes")
 public class PersonneController {
     private final PersonneService personneService;
 
     @PostMapping("/enregistrer")
-    @ApiOperation(value = "Enregistrer une nouvelle personne")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Personne enregistrée avec succès"),
-        @ApiResponse(code = 400, message = "L'âge de la personne dépasse 150 ans")
-    })
+    @Operation(
+        summary = "Enregistrer une nouvelle personne",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Personne enregistrée avec succès"),
+            @ApiResponse(responseCode = "400", description = "L'âge de la personne dépasse 150 ans")
+        }
+    )
     public ResponseEntity<String> enregistrerNouvellePersonne(@RequestBody Personne personne) {
         try {
             personneService.enregistrerPersonne(personne);
@@ -39,11 +40,13 @@ public class PersonneController {
     }
 
     @PostMapping("/{personneId}/ajouter-emploi")
-    @ApiOperation(value = "Ajouter un emploi à une personne")
-    @ApiResponses(value = {
-        @ApiResponse(code = 201, message = "Emploi ajouté avec succès"),
-        @ApiResponse(code = 400, message = "Erreur lors de l'ajout de l'emploi")
-    })
+    @Operation(
+        summary = "Ajouter un emploi à une personne",
+        responses = {
+            @ApiResponse(responseCode = "201", description = "Emploi ajouté avec succès"),
+            @ApiResponse(responseCode = "400", description = "Erreur lors de l'ajout de l'emploi")
+        }
+    )
     public ResponseEntity<String> ajouterEmploi(
             @PathVariable Long personneId,
             @RequestBody Emploi emploi) {
@@ -56,34 +59,46 @@ public class PersonneController {
     }
 
     @GetMapping("/toutes-les-personnes-details")
-    @ApiOperation(value = "Obtenir toutes les personnes avec des détails")
-    public ResponseEntity<List<PersonneDetailsDTO>> obtenirToutesLesPersonnesAvecDetails() {
+    @Operation(
+        summary = "Obtenir toutes les personnes avec des détails"
+    )
+    public ResponseEntity<List<PersonneDetailsDTO> > obtenirToutesLesPersonnesAvecDetails() {
         List<PersonneDetailsDTO> personnesDetails = personneService.obtenirToutesLesPersonnesAvecDetails();
         return ResponseEntity.ok(personnesDetails);
     }
 
     @GetMapping("/par-entreprise")
-    @ApiOperation(value = "Obtenir les personnes par entreprise")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Personnes dans l'entreprise trouvées"),
-        @ApiResponse(code = 404, message = "Aucune personne trouvée pour l'entreprise spécifiée")
-    })
+    @Operation(
+        summary = "Obtenir les personnes par entreprise",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Personnes dans l'entreprise trouvées"),
+            @ApiResponse(responseCode = "404", description = "Aucune personne trouvée pour l'entreprise spécifiée")
+        }
+    )
     public ResponseEntity<List<Personne>> obtenirPersonnesParEntreprise(@RequestParam String entreprise) {
         List<Personne> personnesDansEntreprise = personneService.obtenirPersonnesParEntreprise(entreprise);
         return ResponseEntity.ok(personnesDansEntreprise);
     }
 
     @GetMapping("/{personneId}/emplois-entre-dates")
-    @ApiOperation(value = "Obtenir les emplois d'une personne entre deux dates")
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Emplois trouvés"),
-        @ApiResponse(code = 404, message = "Aucun emploi trouvé pour la personne et les dates spécifiées")
-    })
-    public ResponseEntity<List<Emploi>> obtenirEmploisEntreDeuxDates(
+    @Operation(
+        summary = "Obtenir les emplois d'une personne entre deux dates",
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Emplois trouvés"),
+            @ApiResponse(responseCode = "404", description = "Aucun emploi trouvé pour la personne et les dates spécifiées")
+        }
+    )
+    public ResponseEntity<List<Emploi> > obtenirEmploisEntreDeuxDates(
             @PathVariable Long personneId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateDebut,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFin) {
         List<Emploi> emplois = personneService.obtenirEmploisEntreDeuxDates(personneId, dateDebut, dateFin);
         return ResponseEntity.ok(emplois);
+    }
+    
+    @GetMapping("/{personneId}/emplois")
+    public ResponseEntity<List<Emploi>> getEmploisByPersonneId(@PathVariable Long personneId) {
+        List<Emploi> emplois = personneService.getEmploisByPersonneId(personneId);
+        return new ResponseEntity<>(emplois, HttpStatus.OK);
     }
 }

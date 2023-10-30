@@ -106,4 +106,8 @@ public class PersonneService {
 	        return emploiRepository.findEmploisBetweenDates(personne, dateDebut, dateFin);
 	    }
 
+
+	    public List<Emploi> getEmploisByPersonneId(Long personneId) {
+	        return emploiRepository.findByPersonneId(personneId);
+	    }
 }

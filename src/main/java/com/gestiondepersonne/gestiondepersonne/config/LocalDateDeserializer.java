@@ -14,4 +14,3 @@ public class LocalDateDeserializer extends JsonDeserializer<LocalDate> {
         return LocalDate.parse(dateText, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
 }
-

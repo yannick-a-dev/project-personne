@@ -2,8 +2,8 @@ package com.gestiondepersonne.gestiondepersonne.entities;
 
 import java.time.LocalDate;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -21,15 +21,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Personne {
-	 @Id
-	    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	    private Long id;
-	    private String nom;
-	    private String prenom;
-	    
-	    @JsonFormat(pattern = "yyyy-MM-dd")
-	    private LocalDate dateNaissance;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	private String nom;
+	private String prenom;
 
-	    @OneToMany(mappedBy = "personne", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	    private List<Emploi> emplois;
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	private LocalDate dateNaissance;
+
+	@OneToMany(mappedBy = "personne", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonManagedReference
+	private List<Emploi> emplois;
 }

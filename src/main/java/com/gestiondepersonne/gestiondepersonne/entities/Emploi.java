@@ -2,6 +2,7 @@ package com.gestiondepersonne.gestiondepersonne.entities;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Entity;
@@ -33,6 +34,7 @@ public class Emploi {
     private LocalDate dateFin;
 
 	@ManyToOne
+	@JsonBackReference
 	@JoinColumn(name = "personne_id")
 	private Personne personne;
 
